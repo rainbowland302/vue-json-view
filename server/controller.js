@@ -3,10 +3,10 @@ import Express from 'express';
 const apiRoutes = Express.Router();
 
 
-apiRoutes.get('/andrew', (req, res) => {
+apiRoutes.get('/', (req, res) => {
   const obj = {
-    name: 'Andrew',
-    job: 'Wizard',
+    name: req.query.name,
+    job: req.query.job,
     Skills: [
       'Fire Arrow', 'Ice Arrow', 'Thunder', 'Storm', 'Fire Wall'
     ],

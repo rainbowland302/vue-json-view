@@ -1,7 +1,13 @@
 <template>
   <div id="app">
-    <label for="path">Path: </label>
-    <input name="path" v-model="path">
+    <label for="name">Name: </label>
+    <input name="name" v-model="name">
+    <select name="select" v-model="job"> 
+      <option disabled value="">Please select one</option>
+      <option value="engineer">Engineer</option>
+      <option value="teacher">Teacher</option>
+      <option value="farmer">Farmer</option>
+    </select>
     <button @click="search">search</button>
     <ul>
       <item :model="obj" :keyName="''"></item>
@@ -20,12 +26,13 @@ export default {
   data() {
     return {
       obj: 'Please give an input',
-      path: ''
+      name: '',
+      job:''
     }
   },
   methods: {
     search: function () {
-      fetch(`http://${window.location.hostname}:9000/api/${this.path}`, {
+      fetch(`http://${window.location.hostname}:9000/api?name=${this.name}&job=${this.job}`, {
         method: 'GET',
         headers: {
           'Origin': `http://${window.location.hostname}:8080`,
