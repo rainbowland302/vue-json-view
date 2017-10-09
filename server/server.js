@@ -5,10 +5,10 @@ import bodyParser from 'body-parser';
 import apiRoutes from './controller';
 // Initialize Express server
 const app = new Express();
-const port = process.env.PORT || 3005;
+const port = process.env.PORT || 9000;
 
 // set static file location
-app.use('/', Express.static(require('path').resolve(__dirname, '../dist')));
+app.use('/', Express.static(require('path').resolve(__dirname, 'dist')));
 
 //Config App
 app.use(bodyParser.urlencoded({ extended: false })); // only can deal with key/value
