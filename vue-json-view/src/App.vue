@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     search: function () {
-      fetch(`http://${window.location.hostname}:3005/api/${this.path}`, {
+      fetch(`http://${window.location.hostname}:9000/api/${this.path}`, {
         method: 'GET',
         headers: {
           'Origin': `http://${window.location.hostname}:8080`,
