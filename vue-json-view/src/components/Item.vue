@@ -9,8 +9,10 @@
       <item
         class="item"
         v-for="(value, key) in model"
+        @clearExpandAll="clearExpandAll"
         :model="value"
         :keyName="key"
+        :isExpandAll="isExpandAll"
         :key="key">
       </item>
     </ul>
@@ -22,11 +24,12 @@ export default {
   name: 'Item',
   props: {
     model: Object | String,
-    keyName: String | Number  // "key" is a reserved attribute and cannot be used as component prop
+    keyName: String | Number,  // "key" is a reserved attribute and cannot be used as component prop
+    isExpandAll: Boolean
   },
   data: function () {
     return {
-      open: false
+      expand: false
     }
   },
   computed: {
@@ -44,13 +47,21 @@ export default {
     },
     displayValue: function() {
       return this.isObject ? 'Object' : (this.isArray ? 'Array' : this.model)
+    },
+    open: function() {
+      if(this.isExpandAll) this.expand = true;
+      return this.expand;
     }
   },
   methods: {
     toggle: function () {
       if (this.isNest) {
-        this.open = !this.open
+        this.expand = !this.expand;
+        this.clearExpandAll();
       }
+    },
+    clearExpandAll: function() {
+      this.$emit('clearExpandAll');
     }
   }
 }
