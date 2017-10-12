@@ -9,8 +9,9 @@
       <option value="farmer">Farmer</option>
     </select>
     <button @click="search">search</button>
+    <button @click="setExpandAll">expand all</button>
     <ul>
-      <item :model="obj" :keyName="''"></item>
+      <item :model="obj" :keyName="''" :isExpandAll="isExpandAll" @clearExpandAll="clearExpandAll"></item>
     </ul>
   </div>
 </template>
@@ -27,7 +28,8 @@ export default {
     return {
       obj: 'Please give an input',
       name: '',
-      job:''
+      job:'',
+      isExpandAll: false
     }
   },
   methods: {
@@ -42,6 +44,12 @@ export default {
       .then(res => {
         this.obj = res;
       })
+    },
+    clearExpandAll: function() {
+      this.isExpandAll = false;
+    },
+    setExpandAll: function() {
+      this.isExpandAll = true;
     }
   }
 }
