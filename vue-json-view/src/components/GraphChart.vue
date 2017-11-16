@@ -5,7 +5,9 @@
 </template>
 
 <script>
-import echarts from 'echarts';
+import echarts from "echarts";
+
+import { graphOption } from "../constants/chart-option";
 
 export default {
   name: "GraphChart",
@@ -14,121 +16,87 @@ export default {
     outgoing: Array, // "key" is a reserved attribute and cannot be used as component prop
     host: String
   },
-  mounted: function() {
-    let myChart = echarts.init(document.getElementById("graph-chart"));
-    let option = {
-      title: {
-        text: "WorkLoad Incoming & Outgoing from Host"
-      },
-      tooltip: {},
-      animationDurationUpdate: 1500,
-      animationEasingUpdate: "quinticInOut",
-      series: [
-        {
-          type: "graph",
-          layout: "none",
-          symbolSize: 50,
-          roam: true,
-          label: {
-            normal: {
-              show: true
-            }
-          },
-          edgeSymbol: ["circle", "arrow"],
-          edgeSymbolSize: [4, 10],
-          edgeLabel: {
-            normal: {
-              textStyle: {
-                fontSize: 20
-              }
-            }
-          },
-          data: [
-            {
-              name: "节点1",
-              x: 300,
-              y: 300
-            },
-            {
-              name: "节点2",
-              x: 800,
-              y: 300
-            },
-            {
-              name: "节点3",
-              x: 550,
-              y: 100
-            },
-            {
-              name: "节点4",
-              x: 550,
-              y: 500
-            }
-          ],
-          // links: [],
-          links: [
-            {
-              source: 0,
-              target: 1,
-              symbolSize: [5, 20],
-              label: {
-                normal: {
-                  show: true
-                }
-              },
-              lineStyle: {
-                normal: {
-                  width: 5,
-                  curveness: 0.2
-                }
-              }
-            },
-            {
-              source: "节点2",
-              target: "节点1",
-              label: {
-                normal: {
-                  show: true
-                }
-              },
-              lineStyle: {
-                normal: { curveness: 0.2 }
-              }
-            },
-            {
-              source: "节点1",
-              target: "节点3"
-            },
-            {
-              source: "节点2",
-              target: "节点3"
-            },
-            {
-              source: "节点2",
-              target: "节点4"
-            },
-            {
-              source: "节点1",
-              target: "节点4"
-            }
-          ],
-          lineStyle: {
-            normal: {
-              opacity: 0.9,
-              width: 2,
-              curveness: 0
-            }
-          }
-        }
-      ]
+  data: function() {
+    return {
+      option: graphOption,
+      myChart: {}
     };
-    myChart.setOption(option);
+  },
+  computed: {
+    input: function() {
+      return this.incoming.map(({ name }, index) => ({
+        x: Math.abs(index - 4) * 200,
+        y: 150 * index,
+        name,
+        itemStyle: {
+          normal: { color: "yellowgreen" }
+        }
+      }));
+    },
+    output: function() {
+      return this.outgoing.map(({ name }, index) => ({
+        x: 2400 - Math.abs(index - 4) * 200,
+        y: 150 * index,
+        name,
+        itemStyle: {
+          normal: { color: "deepskyblue" }
+        }
+      }));
+    },
+    middle: function() {
+      return {
+        name: this.host,
+        x: 1200,
+        y: 600,
+        symbolSize: 80
+      };
+    },
+    // {name: string, x: number, y: number}[]
+    data: function() {
+      return [this.middle, ...this.input, ...this.output];
+    },
+    // {source: number | string, target: number | string }[]
+    links: function() {
+      let left = this.input.map(({ name }, index) => ({
+        source: name,
+        target: this.host,
+        lineStyle: {
+          normal: { curveness: index < 4 ? 0.2 : -0.2 },
+        }
+      }));
+      let right = this.output.map(({ name }, index) => ({
+        target: name,
+        source: this.host,
+        lineStyle: {
+          normal: { curveness: index < 4 ? 0.2 : -0.2 }
+        }
+      }));
+      return [...left, ...right];
+    }
+  },
+  watch: {
+    data: function() {
+      this.option.series[0].data = this.data;
+      this.option.series[0].links = this.links;
+      this.myChart.setOption(this.option);
+    }
+  },
+  mounted: function() {
+    this.myChart = echarts.init(document.getElementById("graph-chart"));
+
+    // let option = graphOption;
+    // option.series.data = this.data;
+    // myChart.setOption(option);
   }
 };
 </script>
 
 <style scoped>
 #graph-chart {
-  height: 500px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 </style>

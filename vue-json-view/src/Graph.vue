@@ -22,7 +22,7 @@ export default {
       token: "",
       incoming: [],
       outgoing: [],
-      host: ""
+      host: "host"
     };
   },
   methods: {
@@ -48,9 +48,11 @@ export default {
           fetch(url, {
             method: "GET",
             headers: {
-              Origin: `http://${window.location.hostname}:8080`
+              "content-type": "application/json",
+              accept: "application/json",
+              origin: `http://${window.location.hostname}:8080`
             }
-          }).then(res => json())
+          }).then(res => res.json())
         );
       Promise.all(futures).then(res => {
         this.incoming = res[0];
