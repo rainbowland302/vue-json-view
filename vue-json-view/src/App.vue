@@ -9,9 +9,15 @@
       <option value="farmer">Farmer</option>
     </select>
     <button @click="search">search</button>
-    <button @click="setExpandAll">expand all</button>
     <ul>
-      <item :model="obj" :keyName="''" :isExpandAll="isExpandAll" @clearExpandAll="clearExpandAll"></item>
+      <item 
+        :model="obj" 
+        :keyName="''" 
+        :expandAll="expandAll" 
+        :open="open" 
+        @toggleOpen="toggleOpen"
+        @toggleExpandAll="toggleExpandAll">
+      </item>
     </ul>
   </div>
 </template>
@@ -29,7 +35,8 @@ export default {
       obj: 'Please give an input',
       name: '',
       job:'',
-      isExpandAll: false
+      expandAll: false,
+      open: false,
     }
   },
   methods: {
@@ -45,11 +52,11 @@ export default {
         this.obj = res;
       })
     },
-    clearExpandAll: function() {
-      this.isExpandAll = false;
+    toggleExpandAll: function(){
+      this.expandAll = !this.expandAll;
     },
-    setExpandAll: function() {
-      this.isExpandAll = true;
+    toggleOpen: function(){
+      this.open = !this.open;
     }
   }
 }
